@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🍦 Ice Cream Order - Flavor Selection</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fef6f0 0%, #f9d5bb 100%);
+      color: #4a4a4a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+      display: flex;
+      overflow: hidden;
+      flex-wrap: wrap;
+    }
+
+    .form-section {
+      flex: 1 1 500px;
+      padding: 40px 50px;
+    }
+
+    .summary-section {
+      flex: 1 1 300px;
+      background: #fbe8d3;
+      padding: 40px 30px;
+      border-left: 6px solid #ff6f61;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.6rem;
+      margin-bottom: 8px;
+      color: #ff6f61;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin-bottom: 25px;
+      color: #bf4c42;
+      letter-spacing: 0.05em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #7a5a51;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1.5px solid #e2c9b6;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    select:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #ff6f61;
+      background: #fff3f0;
+    }
+
+    .toppings-group,
+    .delivery-group {
+      margin-bottom: 20px;
+    }
+
+    .checkbox-label,
+    .radio-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #7a5a51;
+      user-select: none;
+      font-size: 1rem;
+    }
+
+    .checkbox-label input,
+    .radio-label input {
+      margin-right: 12px;
+      accent-color: #ff6f61;
+      cursor: pointer;
+      transform: scale(1.2);
+      transition: accent-color 0.3s ease;
+    }
+
+    .order-button {
+      background: #ff6f61;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 8px 20px rgba(255, 111, 97, 0.4);
+    }
+
+    .order-button:hover {
+      background: #e25b4a;
+      box-shadow: 0 10px 30px rgba(226, 91, 74, 0.6);
+    }
+
+    /* Summary styles */
+    .summary-title {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin-bottom: 30px;
+      color: #a94c3f;
+      border-bottom: 2px solid #ff6f61;
+      padding-bottom: 8px;
+    }
+
+    .summary-item {
+      margin-bottom: 18px;
+      font-size: 1.1rem;
+      color: #6b4c43;
+    }
+
+    .summary-label {
+      font-weight: 600;
+      color: #4a3a36;
+      margin-right: 6px;
+    }
+
+    .flavor-highlight {
+      color: #d94e41;
+      font-weight: 700;
+      font-size: 1.3rem;
+      font-style: italic;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        max-width: 420px;
+      }
+      .form-section, .summary-section {
+        flex: 1 1 100%;
+        padding: 30px 25px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" role="main" aria-label="Ice Cream Order Form">
+    <section class="form-section">
+      <h1>Order Now!!</h1>
+      <h2>Flavor: <span id="flavorName" class="flavor-highlight"><strong>{{ flavor }}</strong></span></h2>
+
+      <form id="orderForm" aria-describedby="formInstructions">
+        <p id="formInstructions" style="color:#a35a4a; font-style:italic; margin-bottom: 25px;">
+          Fill out the form below and see your order summary update live!
+        </p>
+
+        <label for="quantity">Quantity (cups):</label>
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          min="1"
+          max="10"
+          value="1"
+          required
+          aria-required="true"
+          aria-describedby="quantityHelp"
+        />
+        <small id="quantityHelp" style="color:#a35a4a; font-size:0.9rem;">
+          Choose between 1 and 10 cups.
+        </small>
+
+        <label for="size">Size:</label>
+        <select id="size" name="size" required aria-required="true">
+          <option value="" disabled selected>Select a size</option>
+          <option value="Small">Small (4 oz)</option>
+          <option value="Medium">Medium (8 oz)</option>
+          <option value="Large">Large (12 oz)</option>
+        </select>
+
+        <fieldset class="toppings-group">
+          <legend style="font-weight:600; margin-bottom: 8px; color:#7a5a51;">
+            Toppings (choose any):
+          </legend>
+          <label class="checkbox-label" for="topping-chocolateChips">
+            <input type="checkbox" id="topping-chocolateChips" name="toppings" value="Chocolate Chips" />
+            Chocolate Chips
+          </label>
+          <label class="checkbox-label" for="topping-sprinkles">
+            <input type="checkbox" id="topping-sprinkles" name="toppings" value="Sprinkles" />
+            Sprinkles
+          </label>
+          <label class="checkbox-label" for="topping-nuts">
+            <input type="checkbox" id="topping-nuts" name="toppings" value="Nuts" />
+            Nuts
+          </label>
+          <label class="checkbox-label" for="topping-caramelDrizzle">
+            <input type="checkbox" id="topping-caramelDrizzle" name="toppings" value="Caramel Drizzle" />
+            Caramel Drizzle
+          </label>
+        </fieldset>
+
+        <fieldset class="delivery-group">
+          <legend style="font-weight:600; margin-bottom: 8px; color:#7a5a51;">
+            Delivery Option:
+          </legend>
+          <label class="radio-label" for="delivery-pickup">
+            <input type="radio" id="delivery-pickup" name="deliveryOption" value="Pickup" required aria-required="true" />
+            Pickup
+          </label>
+          <label class="radio-label" for="delivery-delivery">
+            <input type="radio" id="delivery-delivery" name="deliveryOption" value="Home Delivery" />
+            Home Delivery
+          </label>
+        </fieldset>
+
+        <label for="name">Full Name:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Your full name"
+          required
+          aria-required="true"
+        />
+
+        <label for="phone">Phone Number:</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="e.g. +1 234 567 8900"
+          pattern="^\+?[0-9\s\-]{7,15}$"
+          required
+          aria-required="true"
+          aria-describedby="phoneHelp"
+        />
+        <small id="phoneHelp" style="color:#a35a4a; font-size:0.9rem;">
+          Include country code, e.g. +1 555 555 5555.
+        </small>
+
+        <label for="address">Delivery Address:</label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Street, City, ZIP"
+          aria-describedby="addressHelp"
+        />
+        <small id="addressHelp" style="color:#a35a4a; font-size:0.9rem;">
+          Required only if you select Home Delivery.
+        </small>
+
+        <button type="submit" class="order-button" aria-label="Submit your ice cream order">Place Order</button>
+      </form>
+    </section>
+
+    <aside class="summary-section" aria-label="Order Summary" role="region" aria-live="polite">
+      <h2 class="summary-title">Your Order Summary</h2>
+      <p class="summary-item">
+        <span class="summary-label">Flavor:</span>
+        <span id="summaryFlavor">Strawberry Bliss</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Quantity:</span>
+        <span id="summaryQuantity">1</span> cup(s)
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Size:</span>
+        <span id="summarySize">-</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Toppings:</span>
+        <span id="summaryToppings">None</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Delivery Option:</span>
+        <span id="summaryDelivery">-</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Name:</span>
+        <span id="summaryName">-</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Phone:</span>
+        <span id="summaryPhone">-</span>
+      </p>
+      <p class="summary-item">
+        <span class="summary-label">Address:</span>
+        <span id="summaryAddress">-</span>
+      </p>
+    </aside>
+  </div>
+
+  <script>
+    // Helper to get query param value
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Get flavor from URL or fallback
+    const flavorFromURL = getQueryParam('flavor');
+    const flavor = flavorFromURL ? flavorFromURL.replace(/[^a-zA-Z0-9\s]/g, '') : "Strawberry Bliss";
+
+    // Update flavor on page
+    const flavorNameElem = document.getElementById('flavorName');
+    const summaryFlavor = document.getElementById('summaryFlavor');
+    flavorNameElem.textContent = flavor;
+    summaryFlavor.textContent = flavor;
+
+    // Elements
+    const quantityInput = document.getElementById('quantity');
+    const sizeSelect = document.getElementById('size');
+    const toppingsCheckboxes = document.querySelectorAll('input[name="toppings"]');
+    const deliveryRadios = document.querySelectorAll('input[name="deliveryOption"]');
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+
+    // Update summary live function
+    function updateSummary() {
+      document.getElementById('summaryQuantity').textContent = quantityInput.value;
+
+      const sizeVal = sizeSelect.value || '-';
+      document.getElementById('summarySize').textContent = sizeVal;
+
+      // Get checked toppings
+      const selectedToppings = [];
+      toppingsCheckboxes.forEach(cb => {
+        if (cb.checked) selectedToppings.push(cb.value);
+      });
+      document.getElementById('summaryToppings').textContent = selectedToppings.length ? selectedToppings.join(', ') : 'None';
+
+      // Delivery option
+      let deliveryVal = '-';
+      deliveryRadios.forEach(radio => {
+        if (radio.checked) deliveryVal = radio.value;
+      });
+      document.getElementById('summaryDelivery').textContent = deliveryVal;
+
+      // Name, Phone, Address
+      document.getElementById('summaryName').textContent = nameInput.value || '-';
+      document.getElementById('summaryPhone').textContent = phoneInput.value || '-';
+      document.getElementById('summaryAddress').textContent = addressInput.value || '-';
+    }
+
+    // Attach event listeners for live updates
+    quantityInput.addEventListener('input', updateSummary);
+    sizeSelect.addEventListener('change', updateSummary);
+    toppingsCheckboxes.forEach(cb => cb.addEventListener('change', updateSummary));
+    deliveryRadios.forEach(radio => radio.addEventListener('change', updateSummary));
+    nameInput.addEventListener('input', updateSummary);
+    phoneInput.addEventListener('input', updateSummary);
+    addressInput.addEventListener('input', updateSummary);
+
+    // Initial summary update
+    updateSummary();
+
+    // Handle form submission
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Validate address if delivery selected
+      const deliverySelected = Array.from(deliveryRadios).some(r => r.checked && r.value === "Home Delivery");
+      if (deliverySelected && !addressInput.value.trim()) {
+        alert('Please provide a delivery address for Home Delivery option.');
+        addressInput.focus();
+        return;
+      }
+
+      alert(`Thanks for ordering ${flavor} ice cream!\nWe will contact you soon.`);
+      this.reset();
+      updateSummary();
+    });
+  </script>
+</body>
+</html>

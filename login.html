@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Mood Scoop</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&family=Poppins&display=swap');
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes underlineSlide {
+      from { width: 0; opacity: 0; }
+      to { width: 60px; opacity: 1; }
+    }
+
+    @keyframes shine {
+      0% { left: -75%; }
+      100% { left: 125%; }
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(270deg, #ffd6e8, #f9c5d1, #ffe4ec, #f9c5d1);
+      background-size: 800% 800%;
+      animation: gradientShift 15s ease infinite;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 25px;
+      padding: 50px 45px;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(255, 105, 150, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: fadeIn 1.2s ease forwards;
+      color: #a94c6f;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-weight: 900;
+      font-size: 2.8rem;
+      background: linear-gradient(45deg, #f06292, #d81b60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      text-shadow: 0 1px 6px rgba(216, 27, 96, 0.6);
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      transform: translateX(-50%);
+      height: 4px;
+      width: 60px;
+      background: linear-gradient(90deg, #f06292, #d81b60);
+      border-radius: 3px;
+      animation: underlineSlide 1.5s ease forwards;
+      opacity: 0;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 15px 18px;
+      margin: 12px 0 30px 0;
+      border: 2px solid #f8a7b9;
+      border-radius: 15px;
+      font-size: 1.1rem;
+      font-family: 'Poppins', sans-serif;
+      color: #7a374a;
+      background: #fff0f4;
+      outline: none;
+      transition: 0.3s ease;
+      box-shadow: inset 0 0 8px rgba(249, 197, 209, 0.5);
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+      color: #d08aa1;
+      font-weight: 500;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #d85a7a;
+      background: #ffe8f0;
+      box-shadow: 0 0 12px #d85a7aaa;
+    }
+
+    button {
+      position: relative;
+      width: 100%;
+      padding: 16px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #f9a8b6, #d85a7a);
+      color: white;
+      box-shadow: 0 8px 25px rgba(216, 90, 122, 0.75);
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+      transition: box-shadow 0.3s ease;
+      z-index: 1;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-20deg);
+      transition: none;
+      z-index: 2;
+    }
+
+    button:hover::before {
+      animation: shine 1s ease forwards;
+    }
+
+    button:hover {
+      box-shadow: 0 12px 30px rgba(216, 90, 122, 0.95);
+    }
+
+    a {
+      margin-top: 25px;
+      display: block;
+      color: #b65674;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    a:hover {
+      color: #d85a7a;
+    }
+
+    @media (max-width: 400px) {
+      .form-container {
+        width: 90vw;
+        padding: 35px 25px;
+      }
+      h2 {
+        font-size: 1.8rem;
+      }
+      input[type="text"], input[type="password"] {
+        font-size: 1rem;
+        padding: 12px 15px;
+      }
+      button {
+        font-size: 1rem;
+        padding: 14px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container" aria-label="Login form container">
+    <h2>Login</h2>
+    
+    <!-- Jinja2 error message handling -->
+    {% if error %}
+<script>
+    alert("{{ error }}");
+</script>
+{% endif %}
+
+    
+    <form method="POST" action="{{ url_for('login') }}">
+      <input type="text" name="username" placeholder="Username" required autocomplete="username" />
+      <input type="password" name="password" placeholder="Password" required autocomplete="current-password" />
+      <button type="submit" aria-label="Submit Login Form">Login</button>
+    </form>
+    <a href="register.html">Don't have an account? Register</a>
+  </div>
+</body>
+</html>

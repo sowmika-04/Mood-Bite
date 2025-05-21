@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Ice Cream Vibe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to top right, #ffecd2, #fcb69f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 25px;
+      padding: 40px;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.8rem;
+      color: #ff6f61;
+      margin-bottom: 10px;
+    }
+
+    .caption {
+      font-size: 1.3rem;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .flavor-card {
+      position: relative;
+      background: #ffe8e1;
+      border-radius: 20px;
+      padding: 35px 20px;
+      box-shadow: 0 10px 20px rgba(255, 111, 97, 0.3);
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #d94f3c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+    .flavor-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      color: white;
+    }
+
+    .btn-back {
+      background-color: #f8b500;
+    }
+
+    .btn-back:hover {
+      background-color: #fca311;
+    }
+
+    .btn-order {
+      background-color: #38b000;
+    }
+
+    .btn-order:hover {
+      background-color: #2d6a4f;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      .flavor-card {
+        font-size: 1.4rem;
+        padding: 25px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mood Scoop</h1>
+    <p class="caption">Your flavor vibe today is...</p>
+    <div class="flavor-card">
+      <div class="flavor-icon">🍦</div>
+      <div>{{ flavor }}</div>
+    </div>
+    <div class="buttons">
+      <a href="{{ url_for('mood_input') }}" class="btn btn-back">Choose Another Mood</a>
+      <a href="{{ url_for('order', flavor=flavor) }}" class="btn btn-order">Order Now</a>
+
+    </div>
+  </div>
+</body>
+</html>

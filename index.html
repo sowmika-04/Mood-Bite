@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mood Scoop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Sacramento&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("{{ url_for('static', filename='images/d8.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Light overlay on background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0.4);
+            z-index: 0;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px 40px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            z-index: 1;
+            position: relative;
+        }
+
+        .glass-card img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-card h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 40px;
+            margin: 0;
+            color: #120006;
+        }
+
+        .glass-card h2 {
+            font-family: 'Pacifico', cursive;
+            font-size: 24px;
+            margin-top: 10px;
+            color: #ff4081;
+        }
+
+        .glass-card p {
+            margin: 15px 0;
+            font-size: 18px;
+            color: #ffffffbb;
+        }
+
+        .cta-button {
+            padding: 10px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background-color: #ff4081;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background-color: #e91e63;
+            box-shadow: 0 0 10px #e91e63;
+        }
+
+        /* Modal styling */
+        #loginRegisterModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        #loginRegisterModal .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            color: #333;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+
+        #loginRegisterModal h2 {
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            color: #ff4081;
+        }
+
+        #loginRegisterModal button {
+            margin: 10px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        #loginBtn {
+            background-color: #ff4081;
+            color: white;
+        }
+
+        #loginBtn:hover {
+            background-color: #e91e63;
+            box-shadow: 0 0 10px #e91e63;
+        }
+
+        #registerBtn {
+            background-color: #ff85a2;
+            color: white;
+        }
+
+        #registerBtn:hover {
+            background-color: #ff4081;
+            box-shadow: 0 0 10px #ff4081;
+        }
+
+        #closeModal {
+            margin-top: 15px;
+            background: transparent;
+            color: #666;
+            font-size: 14px;
+        }
+
+        #closeModal:hover {
+            color: #ff4081;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .glass-card h1 {
+                font-size: 32px;
+            }
+            .glass-card h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-card">
+    <img src="{{ url_for('static', filename='images/new3.jpg') }}" class="slide" alt="Ice Cream" />
+    <img src="{{ url_for('static', filename='images/new.jpg') }}" class="slide" alt="Ice Cream" style="display:none;" />
+    <img src="{{ url_for('static', filename='images/nnn.avif') }}" class="slide" alt="Ice Cream" style="display:none;" />
+
+    <h1>Mood Scoop</h1>
+    <h2>Feel It. Scoop It.</h2>
+    <p>Every emotion deserves a flavor.</p>
+    <a href="#" class="cta-button" id="scoopBtn">Scoop Now</a>
+</div>
+
+<!-- Modal -->
+<div id="loginRegisterModal">
+  <div class="modal-content">
+    <h2>Please Login or Register</h2>
+    <button id="loginBtn" onclick="window.location.href='{{ url_for('login') }}'">Login</button>
+    <button id="registerBtn" onclick="window.location.href='{{ url_for('register') }}'">Register</button>
+    <br />
+    <button id="closeModal">Cancel</button>
+  </div>
+</div>
+
+<script>
+    // Slider JavaScript
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    function showSlides() {
+        slides.forEach(slide => slide.style.display = "none");
+        slideIndex = (slideIndex + 1) % slides.length;
+        slides[slideIndex].style.display = "block";
+        setTimeout(showSlides, 3000);
+    }
+
+    showSlides();
+
+    // Modal toggle
+    const scoopBtn = document.getElementById('scoopBtn');
+    const modal = document.getElementById('loginRegisterModal');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    scoopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'flex';
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Close modal if user clicks outside modal content
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

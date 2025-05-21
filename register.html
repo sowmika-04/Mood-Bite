@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Register - Mood Scoop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap');
+
+  @keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .form-container {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 45px 40px;
+    width: 360px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: fadeInScale 0.8s ease forwards;
+    color: #5a375b;
+    text-align: center;
+  }
+
+  h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-bottom: 12px;
+    position: relative;
+    letter-spacing: 1.2px;
+  }
+
+  /* Underline accent below heading */
+  h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #e77f98, #c35d7d);
+    margin: 10px auto 0 auto;
+    border-radius: 3px;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    margin: 18px 0 28px 0;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.05rem;
+    font-family: 'Open Sans', sans-serif;
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 4px 10px rgba(255, 182, 193, 0.4);
+    color: #5a375b;
+    outline: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder {
+    color: #b56b87;
+    font-weight: 600;
+  }
+
+  input[type="text"]:focus, 
+  input[type="email"]:focus, 
+  input[type="password"]:focus {
+    background: #fff;
+    box-shadow: 0 6px 15px rgba(231, 127, 152, 0.7);
+  }
+
+  button {
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    background: linear-gradient(135deg, #e77f98 0%, #c35d7d 100%);
+    box-shadow: 0 10px 25px rgba(195, 93, 125, 0.6);
+    cursor: pointer;
+    transition: background 0.4s ease, transform 0.25s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(135deg, #c35d7d 0%, #e77f98 100%);
+    transform: scale(1.05);
+    box-shadow: 0 14px 30px rgba(231, 127, 152, 0.9);
+  }
+
+  a {
+    display: block;
+    margin-top: 30px;
+    color: #7a4d6a;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: #c35d7d;
+  }
+
+  @media (max-width: 450px) {
+    .form-container {
+      width: 800px;
+      padding: 50px 90px;
+    }
+    h2 {
+      font-size: 2.2rem;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      font-size: 1rem;
+      padding: 12px 15px;
+      margin: 14px 0 22px 0;
+    }
+    button {
+      font-size: 1.1rem;
+      padding: 14px 0;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="form-container" aria-label="Registration form container">
+    <h2>Register</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+      <input type="text" name="username" placeholder="Username" required autocomplete="username" />
+      <input type="email" name="email" placeholder="Email" required autocomplete="email" />
+      <input type="password" name="password" placeholder="Password" required autocomplete="new-password" />
+      <button type="submit" aria-label="Submit Registration Form">Register</button>
+    </form>
+    <a href="login.html">Already have an account? Login</a>
+  </div>
+</body>
+</html>

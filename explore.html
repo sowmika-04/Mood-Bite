@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ice Cream Flavors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0; padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #flavorGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .flavor-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+      cursor: pointer;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.15s ease-in-out;
+      outline: none;
+    }
+    .flavor-card:hover,
+    .flavor-card:focus {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.25);
+    }
+    .flavor-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .flavor-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: white;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px 30px;
+      box-shadow: 0 6px 20px rgb(0 0 0 / 0.3);
+      position: relative;
+    }
+    .modal h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #eee;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      line-height: 28px;
+      text-align: center;
+      padding: 0;
+    }
+    .close-btn:hover {
+      background: #ccc;
+    }
+    .section-title {
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+    }
+    ul.ingredients-list {
+      list-style: disc inside;
+      margin: 0;
+      padding-left: 20px;
+    }
+    table.nutrition-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+    }
+    table.nutrition-table th,
+    table.nutrition-table td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      text-align: left;
+    }
+    table.nutrition-table th {
+      background: #f0f0f0;
+    }
+    .reviews {
+      margin-top: 10px;
+    }
+    .review {
+      border-top: 1px solid #ddd;
+      padding: 8px 0;
+    }
+    .review:first-child {
+      border-top: none;
+    }
+    .review .username {
+      font-weight: bold;
+    }
+    .review .rating {
+      color: #ffa500;
+      margin-left: 6px;
+    }
+    .review .comment {
+      margin: 4px 0 0 0;
+    }
+
+    /* Add Review Section */
+    #addReviewSection {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px solid #ccc;
+    }
+    #addReviewSection label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    #addReviewSection textarea {
+      width: 100%;
+      height: 70px;
+      resize: vertical;
+      font-size: 1rem;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+    #addReviewSection select {
+      padding: 6px 10px;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    #addReviewSection button {
+      background: #28a745;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+    #addReviewSection button:hover {
+      background: #218838;
+    }
+
+    /* Favorite Button */
+    #favoriteBtn {
+      margin-top: 10px;
+      padding: 8px 15px;
+      background: #ffc107;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+    #favoriteBtn.btn-success {
+      background: #28a745;
+      color: white;
+    }
+    #favoriteBtn.btn-warning {
+      background: #ffc107;
+      color: black;
+    }
+
+    /* Scrollbar for modal */
+    .modal::-webkit-scrollbar {
+      width: 8px;
+    }
+    .modal::-webkit-scrollbar-thumb {
+      background: #bbb;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ice Cream Flavors</h1>
+  <div id="flavorGrid" tabindex="0" aria-label="Ice Cream Flavors List">
+    <!-- Flavor cards injected by JS -->
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="flavorModalTitle" tabindex="-1">
+    <div class="modal" role="document">
+      <button class="close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+      <h2 id="flavorModalTitle"></h2>
+      <div>
+        <div>
+          <p class="section-title">Ingredients:</p>
+          <ul class="ingredients-list" id="ingredientsList"></ul>
+        </div>
+        <div>
+          <p class="section-title">Nutrition (per 100g):</p>
+          <table class="nutrition-table" id="nutritionTable">
+            <thead><tr><th>Nutrient</th><th>Amount</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div>
+          <p class="section-title">User Reviews:</p>
+          <div class="reviews" id="reviewsContainer">
+            <!-- Reviews appended here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Add review and favorite only if user is logged in -->
+      <div id="addReviewSection" style="display:none;">
+        <p class="section-title">Add Your Review:</p>
+        <label for="ratingSelect">Rating:</label>
+        <select id="ratingSelect" aria-label="Select rating">
+          <option value="5">★★★★★ (5)</option>
+          <option value="4">★★★★ (4)</option>
+          <option value="3">★★★ (3)</option>
+          <option value="2">★★ (2)</option>
+          <option value="1">★ (1)</option>
+        </select>
+        <label for="commentInput">Comment:</label>
+        <textarea id="commentInput" placeholder="Write your review here..."></textarea>
+        <button id="submitReviewBtn">Submit Review</button>
+        <button id="favoriteBtn" class="btn-warning">Add to Favorites ★</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(function () {
+      // Simulate user logged in or not
+      const userLoggedIn = true;
+
+      const flavorsData = [
+        {
+          id: 1,
+          name: "Chocolate Fudge",
+          image: "/static/images/fudge.webp",
+          ingredients: ["Milk", "Sugar", "Cocoa powder", "Cream", "Vanilla extract"],
+          nutrition: { Calories: "250 kcal", Fat: "15 g", Protein: "4 g", Carbohydrates: "28 g" },
+          reviews: [
+            { username: "Alice", rating: 5, comment: "Absolutely delicious!" },
+            { username: "Bob", rating: 4, comment: "Rich chocolate flavor, loved it." }
+          ]
+        },
+        {
+          id: 2,
+          name: "Strawberry Swirl",
+          image: "/static/images/ss.jpg",
+          ingredients: ["Milk", "Sugar", "Strawberries", "Cream", "Natural flavor"],
+          nutrition: { Calories: "220 kcal", Fat: "12 g", Protein: "3 g", Carbohydrates: "25 g" },
+          reviews: [
+            { username: "Carol", rating: 4, comment: "Fresh and fruity." }
+          ]
+        },
+        {
+          id: 3,
+          name: "Vanilla Bean",
+          image:"/static/images/vb.jpeg" ,
+          ingredients: ["Milk", "Sugar", "Cream", "Vanilla bean extract"],
+          nutrition: { Calories: "210 kcal", Fat: "13 g", Protein: "3 g", Carbohydrates: "22 g" },
+          reviews: []
+        },
+        {
+          id: 4,
+          name: "Mint Chocolate Chip",
+          image: "/static/images/vcc.jpg",
+          ingredients: ["Milk", "Sugar", "Mint extract", "Chocolate chips", "Cream"],
+          nutrition: { Calories: "230 kcal", Fat: "14 g", Protein: "4 g", Carbohydrates: "24 g" },
+          reviews: [
+            { username: "Dave", rating: 5, comment: "Perfect balance of mint and chocolate." }
+          ]
+        },
+        
+{
+  id: 5,
+  name: "Salted Caramel",
+  image:"/static/images/sc.jpg",
+  ingredients: ["Milk", "Sugar", "Caramel", "Salt", "Cream"],
+  nutrition: { Calories: "260 kcal", Fat: "17 g", Protein: "3 g", Carbohydrates: "28 g" },
+  reviews: [
+    { username: "Frank", rating: 4, comment: "Sweet and salty combo is amazing!" }
+  ]
+},
+{
+  id: 6,
+  name: "Choco Crunch",
+  image: "/static/images/crunch.jpg",
+  ingredients: ["Milk", "Cocoa", "Sugar", "Chocolate chips", "Cream"],
+  nutrition: { Calories: "260 kcal", Fat: "18 g", Protein: "3 g", Carbohydrates: "28 g" },
+  reviews: [
+    { username: "Liam", rating: 4, comment: "Rich and chocolaty with a perfect crunch!" }
+  ]
+},
+{
+  id: 7,
+  name: "Berry Burst",
+  image:"/static/images/bb.jpg",
+  ingredients: ["Strawberries", "Blueberries", "Milk", "Sugar", "Cream"],
+  nutrition: { Calories: "220 kcal", Fat: "14 g", Protein: "2 g", Carbohydrates: "24 g" },
+  reviews: [
+    { username: "Sophia", rating: 5, comment: "Refreshing and fruity!" }
+  ]
+},
+{
+  id: 8,
+  name: "Minty Fresh",
+  image: "/static/images/mf.png",
+  ingredients: ["Milk", "Sugar", "Mint extract", "Chocolate flakes", "Cream"],
+  nutrition: { Calories: "230 kcal", Fat: "15 g", Protein: "3 g", Carbohydrates: "25 g" },
+  reviews: [
+    { username: "Arjun", rating: 4, comment: "Cool and crisp mint flavor!" }
+  ]
+},
+{
+  id: 9,
+  name: "Caramel Swirl",
+  image: "/static/images/caramel.jpg",
+  ingredients: ["Milk", "Sugar", "Caramel syrup", "Cream", "Sea salt"],
+  nutrition: { Calories: "250 kcal", Fat: "17 g", Protein: "2 g", Carbohydrates: "29 g" },
+  reviews: [
+    { username: "Noah", rating: 5, comment: "Sweet, salty, and satisfying!" }
+  ]
+},
+{
+  id: 10,
+  name: "Coconut Dream",
+  image: "/static/images/coconut.jpg",
+  ingredients: ["Coconut milk", "Sugar", "Shredded coconut", "Cream"],
+  nutrition: { Calories: "240 kcal", Fat: "18 g", Protein: "2 g", Carbohydrates: "22 g" },
+  reviews: [
+    { username: "Zara", rating: 4, comment: "Tropical and creamy!" }
+  ]
+},
+{
+  id: 11,
+  name: "Lemon Zest",
+  image: "/static/images/lemon.jpg",
+  ingredients: ["Milk", "Sugar", "Lemon juice", "Lemon zest", "Cream"],
+  nutrition: { Calories: "210 kcal", Fat: "12 g", Protein: "3 g", Carbohydrates: "25 g" },
+  reviews: [
+    { username: "Emma", rating: 4, comment: "Tangy and fresh!" }
+  ]
+},
+{
+  id: 12,
+  name: "Peach Delight",
+  image: "/static/images/peach.webp",
+  ingredients: ["Peaches", "Milk", "Sugar", "Cream", "Natural flavor"],
+  nutrition: { Calories: "230 kcal", Fat: "13 g", Protein: "3 g", Carbohydrates: "27 g" },
+  reviews: [
+    { username: "Raj", rating: 5, comment: "Juicy and smooth!" }
+  ]
+},
+{
+  id: 13,
+  name: "Hazelnut Heaven",
+  image: "/static/images/hn.jpg",
+  ingredients: ["Milk", "Hazelnuts", "Sugar", "Cream", "Natural flavor"],
+  nutrition: { Calories: "270 kcal", Fat: "19 g", Protein: "4 g", Carbohydrates: "26 g" },
+  reviews: [
+    { username: "Maya", rating: 5, comment: "So nutty and smooth!" }
+  ]
+},
+{
+  id: 14,
+  name: "Mocha Magic",
+  image: "/static/images/mm.webp",
+  ingredients: ["Milk", "Coffee", "Cocoa", "Sugar", "Cream"],
+  nutrition: { Calories: "240 kcal", Fat: "16 g", Protein: "3 g", Carbohydrates: "26 g" },
+  reviews: [
+    { username: "Jake", rating: 4, comment: "A coffee lover's dream!" }
+  ]
+},
+{
+  id: 15,
+  name: "Tropical Tango",
+  image: "/static/images/mango.avif",
+  ingredients: ["Pineapple", "Mango", "Coconut milk", "Sugar", "Cream"],
+  nutrition: { Calories: "220 kcal", Fat: "14 g", Protein: "2 g", Carbohydrates: "24 g" },
+  reviews: [
+    { username: "Nina", rating: 5, comment: "Exotic and delightful!" }
+  ]
+},
+{
+  id: 16,
+  name: "Banana Bliss",
+  image: "/static/images/banana.webp",
+  ingredients: ["Banana", "Milk", "Sugar", "Cream", "Vanilla extract"],
+  nutrition: { Calories: "225 kcal", Fat: "13 g", Protein: "3 g", Carbohydrates: "27 g" },
+  reviews: [
+    { username: "Aarav", rating: 5, comment: "Smooth, sweet, and full of banana flavor!" }
+  ]
+}
+
+
+      ];
+
+      // Render flavor cards
+      const $flavorGrid = $("#flavorGrid");
+      flavorsData.forEach(flavor => {
+        const $card = $(`
+          <div class="flavor-card" tabindex="0" role="button" aria-pressed="false" aria-label="${flavor.name} flavor details">
+            <img src="${flavor.image}" alt="${flavor.name}" />
+            <div class="flavor-name">${flavor.name}</div>
+          </div>
+        `);
+        $card.data("flavorId", flavor.id);
+        $flavorGrid.append($card);
+      });
+
+      // Modal elements
+      const $modalOverlay = $("#modalOverlay");
+      const $modalTitle = $("#flavorModalTitle");
+      const $ingredientsList = $("#ingredientsList");
+      const $nutritionTableBody = $("#nutritionTable tbody");
+      const $reviewsContainer = $("#reviewsContainer");
+      const $addReviewSection = $("#addReviewSection");
+      const $ratingSelect = $("#ratingSelect");
+      const $commentInput = $("#commentInput");
+      const $submitReviewBtn = $("#submitReviewBtn");
+      const $favoriteBtn = $("#favoriteBtn");
+
+      let currentFlavor = null;
+      const favorites = new Set();
+
+      // Open modal with flavor details
+      function showFlavorDetails(flavorId) {
+        currentFlavor = flavorsData.find(f => f.id === flavorId);
+        if (!currentFlavor) return;
+
+        // Set title
+        $modalTitle.text(currentFlavor.name);
+
+        // Populate ingredients
+        $ingredientsList.empty();
+        currentFlavor.ingredients.forEach(ing => {
+          $ingredientsList.append(`<li>${ing}</li>`);
+        });
+
+        // Populate nutrition
+        $nutritionTableBody.empty();
+        for (const [nutrient, amount] of Object.entries(currentFlavor.nutrition)) {
+          $nutritionTableBody.append(`<tr><td>${nutrient}</td><td>${amount}</td></tr>`);
+        }
+
+        // Populate reviews
+        renderReviews();
+
+        // Show or hide add review section based on user login
+        if (userLoggedIn) {
+          $addReviewSection.show();
+          updateFavoriteButton();
+        } else {
+          $addReviewSection.hide();
+        }
+
+        // Reset inputs
+        $ratingSelect.val("5");
+        $commentInput.val("");
+
+        $modalOverlay.show();
+        $modalOverlay.focus();
+      }
+
+      // Render reviews
+      function renderReviews() {
+        $reviewsContainer.empty();
+        if (currentFlavor.reviews.length === 0) {
+          $reviewsContainer.append("<p>No reviews yet. Be the first to review!</p>");
+          return;
+        }
+        currentFlavor.reviews.forEach(r => {
+          const stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+          $reviewsContainer.append(`
+            <div class="review">
+              <span class="username">${r.username}</span>
+              <span class="rating" aria-label="Rating: ${r.rating} out of 5">${stars}</span>
+              <p class="comment">${r.comment}</p>
+            </div>
+          `);
+        });
+      }
+
+      // Update favorite button text & style
+      function updateFavoriteButton() {
+        if (favorites.has(currentFlavor.name)) {
+          $favoriteBtn.text("Favorited ✓");
+          $favoriteBtn.removeClass("btn-warning").addClass("btn-success");
+        } else {
+          $favoriteBtn.text("Add to Favorites ★");
+          $favoriteBtn.removeClass("btn-success").addClass("btn-warning");
+        }
+      }
+
+      // Event handlers
+      $flavorGrid.on("click", ".flavor-card", function () {
+        const id = $(this).data("flavorId");
+        showFlavorDetails(id);
+      });
+      $flavorGrid.on("keydown", ".flavor-card", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          $(this).click();
+        }
+      });
+
+      $("#modalCloseBtn").click(() => {
+        $modalOverlay.hide();
+      });
+
+      $modalOverlay.on("click", (e) => {
+        if (e.target === $modalOverlay[0]) {
+          $modalOverlay.hide();
+        }
+      });
+
+      // Submit review
+      $submitReviewBtn.click(() => {
+        const rating = parseInt($ratingSelect.val(), 10);
+        const comment = $commentInput.val().trim();
+        if (!comment) {
+          alert("Please enter a comment.");
+          return;
+        }
+        currentFlavor.reviews.push({ username: "You", rating, comment });
+        renderReviews();
+        $ratingSelect.val("5");
+        $commentInput.val("");
+        alert("Review submitted! Thank you.");
+      });
+
+      // Favorite button toggle
+      $favoriteBtn.click(() => {
+        if (favorites.has(currentFlavor.name)) {
+          favorites.delete(currentFlavor.name);
+        } else {
+          favorites.add(currentFlavor.name);
+        }
+        updateFavoriteButton();
+      });
+
+      // Accessibility: trap focus inside modal while open
+      $(document).on('keydown', function(e) {
+        if ($modalOverlay.is(':visible') && e.key === 'Tab') {
+          const focusable = $modalOverlay.find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])').filter(':visible');
+          const first = focusable.first()[0];
+          const last = focusable.last()[0];
+          if (e.shiftKey) { // shift + tab
+            if (document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            }
+          } else { // tab
+            if (document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }
+        if ($modalOverlay.is(':visible') && e.key === 'Escape') {
+          $modalOverlay.hide();
+        }
+      });
+    });
+  </script>
+  <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+  <a href="{{ url_for('mood_input') }}" class="mood-button">Generate Based on Your Current Mood</a>
+</div>
+
+<style>
+  .mood-button {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff6f61;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .mood-button:hover {
+    background-color: #e55b4e;
+  }
+</style>
+
+</body>
+</html>

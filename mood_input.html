@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>How Are You Feeling?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("{{ url_for('static', filename='images/nice.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Quicksand', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #f80404;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        select, input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            margin: 10px 0;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .submit-button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #06f67a;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background-color: #e055a1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Change action URL to /recommend -->
+    <form action="/recommend" method="POST" class="glass-card">
+        <h1>Your Scoop Awaits!</h1>
+        <p>Tell us your current mood and we'll scoop up the perfect flavor for you 🍨</p>
+        
+        <select name="mood" required>
+            <option value="" disabled selected>-- Select Your Mood --</option>
+            <option value="happy">Happy 😊</option>
+            <option value="sad">Sad 😢</option>
+            <option value="angry">Angry 😡</option>
+            <option value="anxious">Anxious 😰</option>
+            <option value="romantic">Romantic ❤️</option>
+            <option value="bored">Bored 😴</option>
+            <option value="excited">Excited 🤩</option>
+        </select>
+
+        <input type="text" name="note" placeholder="Want to add something?" />
+
+        <button type="submit" class="submit-button">Get My Scoop!</button>
+    </form>
+</body>
+</html>
